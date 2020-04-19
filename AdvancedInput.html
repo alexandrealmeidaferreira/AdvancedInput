@@ -1,0 +1,112 @@
+<html>
+
+<head>
+    <title>AdvancedInput for Javascript</title>
+    <script type="module">
+        import { AdvancedInput } from './src/AdvancedInput.js'
+        const input = new AdvancedInput();
+        input.createKeyboard('Player1', {
+            ArrowUp: 'Up',
+            ArrowDown: 'Down',
+            ArrowLeft: 'Left',
+            ArrowRight: 'Right',
+            Enter: 'Start',
+            Esc: 'Select',
+            z: 'ButtonA',
+            x: 'ButtonB',
+            a: 'ButtonX',
+            s: 'ButtonY',
+            d: 'ButtonL',
+            c: 'ButtonR',
+            q: 'ButtonL2',
+            w: 'ButtonR2',
+            e: 'ButtonL3',
+            r: 'ButtonR3',
+        });
+
+        input.createGamepad('Player1', 'DEFAULT_GENERIC');
+        input.setAxesPrecision('Player1', 0.5);
+        input.start();
+        let enabled = true;
+        input.listen((inputId, inputType, state) => {
+            //console.log(inputId, inputType, state);
+            if (state.arrayStates.indexOf('ButtonR3') !== -1) {
+                console.log('moves inverted');
+                input.invertAllSpecialMoves('Player1', 'invertX');
+            }
+
+            if (state.arrayStates.indexOf('ButtonL3') !== -1) {
+                if (enabled) {
+                    enabled = false;
+                    console.log('special moves disabled');
+                } else {
+                    enabled = true;
+                    console.log('special moves enabled');
+
+                }
+                input.enableAllSpecialMoves('Player1', enabled);
+            }
+        });
+
+        // SPECIAL MOVEMENTS
+        input.createSpecialMoves('hadouken',
+            {
+                DPad: ['Down', 'DownRight', 'Right'],
+                Buttons: ['ButtonX', 'ButtonY', 'ButtonL'],
+                type: 'sequence',
+                timeout: 100 //max exection time in ms default is 250
+            }
+        );
+        input.createSpecialMoves('shouryuken',
+            {
+                DPad: ['Right', 'DownRight', 'Right'],
+                Buttons: ['ButtonX', 'ButtonY', 'ButtonL'],
+                type: 'sequence',
+            }
+        );
+        input.createSpecialMoves('fire-hadouken',
+            {
+                DPad: ['Left', 'Down', 'DownRight', 'Right'],
+                Buttons: ['ButtonX', 'ButtonY', 'ButtonL'],
+                type: 'sequence',
+            }
+        );
+        input.createSpecialMoves('super-hadouken',
+            {
+                DPad: ['Down', 'DownRight', 'Right'],
+                Buttons: ['ButtonX+ButtonY+ButtonL'],
+                type: 'sequence',
+            }
+        );
+
+        input.createSpecialMoves('sonic-boom',
+            {
+                DPad: ['Left', 'Right'], //first will be the chargekey
+                Buttons: ['ButtonX', 'ButtonY', 'ButtonL'],
+                type: 'charge',
+                chargeTime: 1200,
+            }
+        );
+
+        input.addInputSpecialMove('Player1', 'hadouken');
+        input.addInputSpecialMove('Player1', 'shouryuken');
+        input.addInputSpecialMove('Player1', 'fire-hadouken');
+        input.addInputSpecialMove('Player1', 'super-hadouken');
+        input.addInputSpecialMove('Player1', 'sonic-boom');
+
+        //invert only one move
+        //input.invertSpecialMove('Player1', 'fire-hadouken', 'invertX')
+        input.startSpecialMoves();//start engine
+
+        input.listenSpecialMoves((inputId, movesArray, movesObject) => {
+            console.log('SpecialMoves', inputId, movesArray, movesObject);
+        });
+
+    </script>
+</head>
+
+<body>
+    <p>see browser console log</p>
+</body>
+
+</html>

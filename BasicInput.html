@@ -1,0 +1,52 @@
+<html>
+
+<head>
+    <title>BasicInput for Javascript</title>
+    <script type="module">
+        import { BasicInput } from './src/BasicInput.js'
+        const input = new BasicInput();
+        input.createKeyboard('Player1', {
+            ArrowUp: 'Up',
+            ArrowDown: 'Down',
+            ArrowLeft: 'Left',
+            ArrowRight: 'Right',
+            Enter: 'Start',
+            Esc: 'Select',
+            z: 'ButtonA',
+            x: 'ButtonB',
+            a: 'ButtonX',
+            s: 'ButtonY',
+            c: 'ButtonR',
+            d: 'ButtonL',
+            q: 'ButtonL2',
+            w: 'ButtonR2',
+            e: 'ButtonL3',
+            r: 'ButtonR3',
+        });
+
+        input.createGamepad('Player1', 'DEFAULT_GENERIC');
+
+        input.setAxesPrecision('Player1', 0.5);
+        input.start();
+
+        //input.disableMoveButtons('Player1');
+        //input.enableMoveButtons('Player1');
+        // input.disableButtons('Player1',
+        //     ['Up', 'Down']
+        // );
+        // input.enableButtons('Player1',
+        //     ['Up', 'Down']
+        // );
+
+        input.listen((inputId, inputType, state) => {
+            console.log(inputId, inputType, state);
+        });
+
+    </script>
+</head>
+
+<body>
+    <p>see browser console log</p>
+</body>
+
+</html>
