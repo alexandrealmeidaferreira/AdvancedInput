@@ -7,22 +7,22 @@
 
 
 #### This package has 3 different modules consisting of:
-- ###AvancedInput
+- ### AdvancedInput
 Adds a special movement system
-- ###BasicInput
+- ### BasicInput
 Normalizes the configuration and output of the keyboard and gamepad, adds basic mapping of buttons and keys
-- ###RawInput
+- ### RawInput
 Normalizes basic keyboard and gamepad events, manages connection of new gamepads, manages keyboard keys by separating and configuring part of the keyboard for each player
 
-#AvancedInput
+# AdvancedInput
 ---
 This package inherits BasicInput functionality, initialization is the same
 ```javascript
 import { AdvancedInput } from './src/AdvancedInput.js'
 const input = new AdvancedInput();
 ```
-####SPECIAL MOVEMENTS
-#####Type sequence
+#### SPECIAL MOVEMENTS
+##### Type sequence
 ```javascript
 //create a hadouken like
 input.createSpecialMoves('hadouken',
@@ -48,7 +48,7 @@ input.createSpecialMoves('shouryuken',
 input.addInputSpecialMove('Player1', 'shouryuken');
 input.addInputSpecialMove('Player2', 'shouryuken');
 ```
-#####Type charge
+##### Type charge
 ```javascript
 //create charge special move
 input.createSpecialMoves('sonic-boom',
@@ -62,7 +62,7 @@ input.createSpecialMoves('sonic-boom',
 //add it to player
 input.addInputSpecialMove('Player1', 'sonic-boom');
 ```
-#####Buttons pressed at same time
+##### Buttons pressed at same time
 ```javascript
 input.createSpecialMoves('super-hadouken',
     {
@@ -72,7 +72,7 @@ input.createSpecialMoves('super-hadouken',
     }
 );
 ```
-####Listen special moves events
+#### Listen special moves events
 ```javascript
 //start it
 input.startSpecialMoves();//start engine
@@ -81,7 +81,7 @@ input.listenSpecialMoves((inputId, movesArray, movesObject) => {
     console.log('SpecialMoves', inputId, movesArray, movesObject);
 });
 ```
-####Others options
+#### Others options
 ```javascript
 //invert only one move
 input.invertSpecialMove('Player1', 'hadouken', 'invertX');
@@ -96,14 +96,14 @@ input.enableSpecialMove('Player1', 'hadouken', false);
 input.enableAllSpecialMoves('Player1', true); //false to disable it
 ```
 
-#BasicInput
+# BasicInput
 ---
 ```javascript
 import { BasicInput } from './src/BasicInput.js'
 const input = new BasicInput();
 ```
 You can create a keyboard and gamepad with same player id this will add Players ability to use keyboard and gamepad simultaneous
-####Keyboard
+#### Keyboard
 ```javascript
 input.createKeyboard('Player1', {
     ArrowUp: 'Up',
@@ -124,7 +124,7 @@ input.createKeyboard('Player1', {
     r: 'ButtonR3',
 });
 ```
-####Gamepad
+#### Gamepad
 ```javascript
 //values can be 
 //DEFAULT_GENERIC, DEFAULT_GENERIC_NO_AXES, DEFAULT_GENERIC_AXES
@@ -156,7 +156,7 @@ input.createGamepad('Player1',
     Triggers: true,
 });
 ```
-####Listen events
+#### Listen events
 ```javascript
 //you need start it first
 input.start();
@@ -165,7 +165,7 @@ input.listen((inputId, inputType, state) => {
     console.log(inputId, inputType, state);
 });
 ```
-####Others options
+#### Others options
 ```javascript
 //disable up, down, left, right
 input.disableMoveButtons('Player1');
@@ -193,13 +193,13 @@ input.enableAllButtons('Player1');
 input.setAxesPrecision('Player1', 0.5);
 ```
 
-#RawInput
+# RawInput
 ---
 ```javascript
 import { RawInput } from './src/RawInput.js'
 const input = new RawInput();
 ```
-####Keyboard
+#### Keyboard
 ```javascript
 //init keyboard
 input.createKeyboardInput({
@@ -225,7 +225,7 @@ input.createKeyboardInput({
     }
 });
 ```
-####Gamepads
+#### Gamepads
 ```javascript
 //init a gamepad
 //trim axes to values
@@ -253,14 +253,14 @@ input.createGamepadInput({
     },
 });
 ```
-####Listen events
+#### Listen events
 ```javascript
 //listen for keys events
 input.listen((inputId, inputType, buttonType, keyState) => {
     console.log(inputId, inputType, buttonType, keyState);
 });
 ```
-####Block movements
+#### Block movements
 ```javascript
 //keyboard
 input.setKeyboardAllowedKeys(inputId, 
