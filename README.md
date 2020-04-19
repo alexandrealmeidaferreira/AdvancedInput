@@ -3,7 +3,7 @@
 - Normalizes output of keys and buttons
 - Can convert axes to move buttons
 - Add multi player to keyboard
-- Manges gamepad connections
+- Manages gamepad connections
 
 
 #### This package has 3 different modules consisting of:
