@@ -151,9 +151,21 @@ input.createGamepad('Player1',
     Button11: 'ButtonR3',
     Button16: 'Home',
     Button17: 'Touchpad', //ps4 controller touchpad
-    Axes: {},
-    //ENABLE TRIGGERS
-    Triggers: true,
+    Thumbsticks: {
+        Left: {
+            left: 'Button14',
+            right: 'Button15',
+            up: 'Button12',
+            down: 'Button13',
+        },
+        Right: {
+            left: 'Button2',
+            right: 'Button1',
+            up: 'Button3',
+            down: 'Button0',
+        }
+    },
+    Triggers: false, //default value is false
 });
 ```
 #### Listen events
@@ -191,6 +203,9 @@ input.enableAllButtons('Player1');
 
 //set axes precision
 input.setAxesPrecision('Player1', 0.5);
+
+//enable triggers
+input.enableGamepadTriggers('Player1', true);
 ```
 
 # RawInput
@@ -231,11 +246,13 @@ input.createKeyboardInput({
 //trim axes to values
 input.createGamepadInput({
     inputId: 'gamepad2',
-    configAxes: {
-        0: [-1, 1], //x axes of left thumbstick
-        1: [-1, 1], //y axes of left thumbstick
-        2: [-1, 1], //x axes of right thumbstick
-        3: [-1, 1], //y axes of right thumbstick
+    axesToButtons: {
+        //left thumbstick
+        0: ['Button14', 'Button15'],
+        1: ['Button12', 'Button13'],
+        //right thumbstick
+        2: ['Button2', 'Button1'],
+        3: ['Button3', 'Button0'],
     },
 });
 
@@ -245,12 +262,15 @@ input.setAxesPrecision(inputId, 0.05);
 //change precision is same do this
 input.createGamepadInput({
     inputId: 'gamepad2',
-    configAxes: {
-        0: [-0.05, 0.05],
-        1: [-0.05, 0.05],
-        2: [-0.05, 0.05],
-        3: [-0.05, 0.05],
+    axesToButtons: {
+        //left thumbstick
+        0: ['Button14', 'Button15'],
+        1: ['Button12', 'Button13'],
+        //right thumbstick
+        2: ['Button2', 'Button1'],
+        3: ['Button3', 'Button0'],
     },
+    axesPrecision: [-0.050, 0.050] // default is [-1,1]
 });
 ```
 #### Listen events
@@ -297,5 +317,8 @@ input.setGamepadAllowedKeys(inputId,
 //you have getters to actual enabled and disabled keys
 let keyboardAllowedKeys = input.getKeyboardAllowedKeys(inputId);
 let gamepadAllowedKeys = input.getGamepadAllowedKeys(inputId);
+
+//enable triggers 
+input.enableGamepadTriggers('Player1', true);
 ```
 *Enjoy!*

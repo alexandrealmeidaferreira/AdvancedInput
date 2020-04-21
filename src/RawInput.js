@@ -44,33 +44,32 @@ export class RawInput {
                                 if (!this.gamepadInputs[gamepadId].allowedKeys[`Button${b}`]) continue;
                                 this.gamepadInputs[gamepadId].buttons[`Button${b}`] = gamepad.buttons[b].pressed;
                                 //L2 and R2 trigger values
-                                if (b === 6) { //L2
-                                    this.gamepadInputs[gamepadId].triggers['TriggerL'] = gamepad.buttons[b].value;
-                                }
-                                if (b === 7) { //R2
-                                    this.gamepadInputs[gamepadId].triggers['TriggerR'] = gamepad.buttons[b].value;
+                                if (this.gamepadInputs[gamepadId].triggers !== false) {
+                                    if (b === 6) { //L2
+                                        this.gamepadInputs[gamepadId].triggers['TriggerL'] = gamepad.buttons[b].value;
+                                    }
+                                    if (b === 7) { //R2
+                                        this.gamepadInputs[gamepadId].triggers['TriggerR'] = gamepad.buttons[b].value;
+                                    }
                                 }
                             }
 
                             //update axes
                             for (let b = 0; b < gamepad.axes.length; b++) {
                                 let axeValue = parseFloat(gamepad.axes[b].toFixed(3));
-                                this.gamepadInputs[gamepadId].axes[b] = axeValue;
-                                if (this.gamepadInputs[gamepadId].configAxes && Object.entries(this.gamepadInputs[gamepadId].configAxes).length > 0) {
-                                    //if has axes config
-                                    if (this.gamepadInputs[gamepadId].configAxes[b]) {
-                                        this.gamepadInputs[gamepadId].axes[b] = 0;
-                                        if (axeValue < 0) {
-                                            //compare negative
-                                            if (this.gamepadInputs[gamepadId].configAxes[b][0] >= axeValue) {
-                                                this.gamepadInputs[gamepadId].axes[b] = -1;
-                                            }
-                                        } else {
-                                            if (this.gamepadInputs[gamepadId].configAxes[b][1] <= axeValue) {
-                                                this.gamepadInputs[gamepadId].axes[b] = 1;
-                                            }
+                                //axes to buttons config
+                                if (this.gamepadInputs[gamepadId].axesToButtons && Object.entries(this.gamepadInputs[gamepadId].axesToButtons).length > 0) {
+                                    if (this.gamepadInputs[gamepadId].axesToButtons[b]) {
+                                        if (axeValue <= this.gamepadInputs[gamepadId].axesPrecision[0] && this.gamepadInputs[gamepadId].allowedKeys[this.gamepadInputs[gamepadId].axesToButtons[b][0]]) {
+                                            this.gamepadInputs[gamepadId].buttons[this.gamepadInputs[gamepadId].axesToButtons[b][0]] = true;
+                                        }
+                                        if (axeValue >= this.gamepadInputs[gamepadId].axesPrecision[1] && this.gamepadInputs[gamepadId].allowedKeys[this.gamepadInputs[gamepadId].axesToButtons[b][1]]) {
+                                            this.gamepadInputs[gamepadId].buttons[this.gamepadInputs[gamepadId].axesToButtons[b][1]] = true;
                                         }
                                     }
+                                } else {
+                                    //raw axes
+                                    this.gamepadInputs[gamepadId].axes[b] = axeValue;
                                 }
                             }
 
@@ -86,8 +85,8 @@ export class RawInput {
                                 this.notify(gamepadId, 'gamepad', 'axes', this.gamepadInputs[gamepadId].axes);
                             }
 
-                            //send event to gamepad triggers observers
-                            let triggersChanged = (JSON.stringify(this.gamepadInputs[gamepadId].triggers) !== JSON.stringify(this.gamepadInputs[gamepadId].prevTriggers));
+                            //send event to gamepad triggers observers (if enabled)
+                            let triggersChanged = (this.gamepadInputs[gamepadId].triggers !== false && JSON.stringify(this.gamepadInputs[gamepadId].triggers) !== JSON.stringify(this.gamepadInputs[gamepadId].prevTriggers));
                             if (triggersChanged) {
                                 this.notify(gamepadId, 'gamepad', 'triggers', this.gamepadInputs[gamepadId].triggers);
                             }
@@ -186,7 +185,6 @@ export class RawInput {
             prevAxes: {},
             triggers: {},
             prevTriggers: {},
-            configAxes: {},
             allowedKeys: {
                 Button0: true,
                 Button1: true,
@@ -207,6 +205,8 @@ export class RawInput {
                 Button16: true,
                 Button17: true,
             },
+            axesToButtons: false,
+            axesPrecision: [-1, 1]
         };
         Object.assign(config, options);
         this.gamepadInputsWithNoGamepad.push(config.inputId);
@@ -217,16 +217,12 @@ export class RawInput {
         this.gamepadInputs[inputId].allowedKeys = allowedKeys;
     }
 
+    enableGamepadTriggers(inputId, enable) {
+        this.gamepadInputs[inputId].triggers = (enable === false) ? false : {};
+    }
+
     getGamepadAllowedKeys(inputId) {
         return this.gamepadInputs[inputId].allowedKeys;
-    }
-
-    setGamepadAxes(inputId, configAxes) {
-        this.gamepadInputs[inputId].configAxes = configAxes;
-    }
-
-    getGamepadAxes(inputId) {
-        return this.gamepadInputs[inputId].configAxes;
     }
 
     //index gamepad navigator to gamepad configured
@@ -243,11 +239,6 @@ export class RawInput {
 
     //change axes precision
     setAxesPrecision(inputId, precision) {
-        this.gamepadInputs[inputId].configAxes = {
-            0: [-precision, precision],
-            1: [-precision, precision],
-            2: [-precision, precision],
-            3: [-precision, precision],
-        }
+        this.gamepadInputs[inputId].axesPrecision = [-precision, precision];
     }
 }

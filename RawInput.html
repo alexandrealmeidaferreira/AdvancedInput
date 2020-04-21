@@ -19,25 +19,22 @@
 
         input.createGamepadInput({
             inputId: 'gamepad1',
-            //more precision
-            // configAxes: {
-            //     0: [-0.01, 0.01],
-            //     1: [-0.01, 0.01],
-            //     2: [-0.01, 0.01],
-            //     3: [-0.01, 0.01],
-            // },
-            //less precision
-            configAxes: {
-                0: [-1, 1],
-                1: [-1, 1],
-                2: [-1, 1],
-                3: [-1, 1],
+            triggers: false, //triggers enabled disabled
+            axesToButtons: {
+                //left thumbstick
+                0: ['Button14', 'Button15'],
+                1: ['Button12', 'Button13'],
+                //right thumbstick
+                2: ['Button2', 'Button1'],
+                3: ['Button3', 'Button0'],
             },
+            axesPrecision: [-0.050, 0.050] // default is [-1,1]
         });
         //change precision of axes
         //input.setAxesPrecision('gamepad1', 0.01);
 
         input.listen((inputId, inputType, buttonType, keyState) => {
+
             console.log(inputId, inputType, buttonType, keyState);
         });
 
